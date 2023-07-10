@@ -1,15 +1,18 @@
 from utils import get_data, get_filtered_data, get_sorted_data, get_formatted
+
 FILE_NAME = "operations.json"
+# CTRL+ALT+L - автоформатирование кода
 def main():
-    print("Course work 3")
+    # print("Course work 3")
     data = get_data(FILE_NAME)
-    print(data)
+    # print(data)
     data = get_filtered_data(data)
-    print(data)
+    # print(data)
     data = get_sorted_data(data)
-    print(data)
+
+    # print(data)
     data = get_formatted(data)
-    print(data)
+    # print(data)
 
 
 if __name__ == '__main__':
