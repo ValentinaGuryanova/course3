@@ -1,25 +1,22 @@
 from datetime import datetime
 import json
-FILE_NAME = "operations.json"
 
 def get_data(file_name):
     """Получает данные из файла"""
 
     with open(file_name, "r", encoding="utf-8") as file:
+        file_data = file.read()
+    return json.loads(file_data)
 
-       for data in file:
-           print(data)
-
-get_data("operations.json")
 
 def get_filtered_data(data):
     """Фильтрует данные из файла"""
 
     new_data = []
     for transaction in data:
-        if transaction['state'] in transaction and transaction['state'] == 'EXECUTED':
+        if transaction and transaction.get('state') == 'EXECUTED':
             new_data.append(transaction)
-    print(new_data)
+    return new_data
 
 
 def get_sorted_data(data):
@@ -29,17 +26,32 @@ def get_sorted_data(data):
     return data[:5]
 
 
-def get_formatted(data):
-    """Форматирует данные из файла"""
+def print_result(data):
+    """Форматирует данные из файла и выводит на печать"""
 
-    for i in data:
-        old_data = data[i]['date']
-        print(old_data)
-        date_transaction = datetime.strptime(old_data, "%Y-%m-%dT%H:%M:%S.%f")
-        print(date_transaction)
-        date_transaction = date_transaction.strftime("%d.%m.%Y")
-        print(date_transaction)
-        return [f"""
-{date_transaction} Перевод организации
-Visa Platinum 7000 79** **** 6361 -> Счет **9638
-82771.72 руб."""]
+    for transaction in data:
+        if transaction.get("from"):
+            old_data = transaction["date"]
+            date_transaction = datetime.strptime(old_data, "%Y-%m-%dT%H:%M:%S.%f")
+            date_transaction = date_transaction.strftime("%d.%m.%Y")
+            old_count_to = transaction["to"]
+            count_transaction_to = old_count_to[-4:]
+            old_count_from = transaction["from"]
+            if not old_count_from.find("Счет"):
+                count_transaction_from = old_count_from[-4:]
+                print(f'\n{date_transaction} {transaction.get("description")}\nСчет **{count_transaction_from} -> Счет **{count_transaction_to}\n{transaction["operationAmount"]["amount"]} руб.')
+            else:
+                count_transaction_from = old_count_from[:-16]
+                count_transaction_from_number = old_count_from[-16:]
+                c1 = count_transaction_from_number[:4]
+                c2 = count_transaction_from_number[4:6]
+                c3 = count_transaction_from_number[-4:]
+                print(f'\n{date_transaction} {transaction.get("description")}\n{count_transaction_from}{c1} {c2}** **** {c3} -> Счет **{count_transaction_to}\n{transaction["operationAmount"]["amount"]} руб.')
+        else:
+            old_data = transaction["date"]
+            date_transaction = datetime.strptime(old_data, "%Y-%m-%dT%H:%M:%S.%f")
+            date_transaction = date_transaction.strftime("%d.%m.%Y")
+            old_count_to = transaction["to"]
+            count_transaction_to = old_count_to[-4:]
+            print(f'\n{date_transaction} {transaction.get("description")}\n-> Счет **{count_transaction_to}\n{transaction["operationAmount"]["amount"]} руб.')
+

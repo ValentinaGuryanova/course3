@@ -1,14 +1,15 @@
-from utils import get_data, get_filtered_data, get_sorted_data, get_formatted
+from utils import get_data, get_filtered_data, get_sorted_data, print_result
+
 FILE_NAME = "operations.json"
+
 def main():
-    print("Course work 3")
+    """выводит на экран список из 5 последних выполненных клиентом операций"""
+
+    print("Курсовой проект по курсу «Основы backend-разработки»")
     data = get_data(FILE_NAME)
-    print(data)
     data = get_filtered_data(data)
-    print(data)
     data = get_sorted_data(data)
-    print(data)
-    data = get_formatted(data)
+    data = print_result(data)
     print(data)
 
 
